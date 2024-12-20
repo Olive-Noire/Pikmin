@@ -7,8 +7,3 @@ class Entity:
         self.velocity = velocity
         self.acceleraiton = acceleration
         self.collision_box = collision_box
-
-s
-abas
-t
-nn
