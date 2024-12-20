@@ -8,4 +8,4 @@ class Entity:
         self.acceleraiton = acceleration
         self.collision_box = collision_box
 
-saucisse
+sauc
