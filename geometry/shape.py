@@ -25,6 +25,16 @@ class Circle(Shape):
         assert(radius > 0)
         self.radius = radius
 
+    def __and__(self, other):
+        if type(other) == Line:
+            a, b, c = other.get_coefficients()
+
+            great_a = 1+(a/b)**2
+            great_b = -2*self.center[0]+2*(a/b)*(c/b+self.center[1])
+            great_c = self.center[0]**2+(c/b+self.center[1])**2-self.radius**2
+
+            return great_b**2 >= 4*great_a*great_c
+
 class Rectangle(Shape):
     def __init__(self, top_left_corner: Point, width: float, height: float):
         self.top_left_corner = top_left_corner
