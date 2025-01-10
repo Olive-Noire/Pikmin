@@ -13,7 +13,7 @@ def norm(v: Vector):
 def distance(a: Point, b: Point):
     return sqrt(squared_distance(a, b))
 
-def barycenter(points):
-    vectors = [Vector(*p.get_coordinates()) for p in points] # convert points to vectors
+def barycenter(points: list):
+    vectors = [create_vector(p) for p in points] # convert points to vectors
     vectors_mean = sum(vectors, start = Vector(0, 0))/len(points) # mean of components
     return Point(*vectors_mean.get_components())
