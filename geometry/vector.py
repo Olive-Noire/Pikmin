@@ -61,3 +61,6 @@ class Vector:
 
     def __repr__(self):
         return self.components.__repr__()
+
+def create_vector(A: Point, B: Point):
+    return Vector(B[0]-A[0], B[1]-A[1])
