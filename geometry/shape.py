@@ -7,7 +7,22 @@ class Shape:
 
 class Circle(Shape):
     def __init__(self, center: Point, radius: float):
+        assert(radius > 0)
+
         self.center = center
+        self.radius = radius
+    
+    def get_center(self):
+        return self.center
+    
+    def get_radius(self):
+        return self.radius
+    
+    def set_center(self, center):
+        self.center = center
+    
+    def set_radius(self, radius):
+        assert(radius > 0)
         self.radius = radius
 
 class Rectangle(Shape):
