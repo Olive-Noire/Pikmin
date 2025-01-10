@@ -1,7 +1,8 @@
+from math import sin, cos, tan, atan, sqrt, pi
+
 from geometry.line import *
 from geometry.vector import *
 from geometry.utils import squared_distance, barycenter
-from math import sin,cos,tan,atan,sqrt,pi
 
 class Shape:
     def __init__(self):
@@ -40,17 +41,18 @@ class Circle(Shape):
             return squared_distance(self._center, other._center) <= (self._radius+other._radius)**2
 
 class Rectangle(Shape):
-    def __init__(self, point_random: Point, width: float, height: float,angle=float):
-        self.angle=angle
-        self.origine = point_random
+    def __init__(self, point_random: Point, width: float, height: float, angle: float):
+        self.angle = angle
+        self.origin = point_random
         self.width = width
         self.height = height
-    def get_points(self):
-        point_1=Point(self.origine[0]+self.width*sin(self.angle),self.origine[1]+self.width*cos(self.angle))
-        point_2=Point(point_1[0]+self.height*sin(self.angle-pi/2),point_1[1]+self.height*cos(self.angle-pi/2))
-        point_3=Point(self.origine[0]+self.height*sin(self.angle-pi/2),self.origine[1]+self.height*cos(pi/2-self.angle))
 
-        return (self.origine,point_1,point_2,point_3,self.origine[1])
+    def get_points(self):
+        point_1 = Point(self.origin[0]+self.width*sin(self.angle), self.origin[1]+self.width*cos(self.angle))
+        point_2 = Point(point_1[0]+self.height*sin(self.angle-pi/2), point_1[1]+self.height*cos(self.angle-pi/2))
+        point_3 = Point(self.origin[0]+self.height*sin(self.angle-pi/2), self.origin[1]+self.height*cos(pi/2-self.angle))
+
+        return (self.origin, point_1, point_2, point_3, self.origin[1])
 
 class Triangle(Shape):
     def __init__(self, vertex1: Point, vertex2: Point, vertex3: Point):
