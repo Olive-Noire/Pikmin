@@ -36,10 +36,17 @@ class Circle(Shape):
             return great_b**2 >= 4*great_a*great_c
 
 class Rectangle(Shape):
-    def __init__(self, top_left_corner: Point, width: float, height: float):
-        self.top_left_corner = top_left_corner
+    def __init__(self, point_random: Point, width: float, height: float,angle=float):
+        self.angle=angle
+        self.origine = point_random
         self.width = width
         self.height = height
+    def get_points(self):
+        point_1=Point(self.origine[0]+self.width*sin(self.angle),self.origine[1]+self.width*cos(self.angle))
+        point_2=Point(point_1[0]+self.height*sin(self.angle-pi/2),point_1[1]+self.height*cos(self.angle-pi/2))
+        point_3=Point(self.origine[0]+self.height*sin(self.angle-pi/2),self.origine[1]+self.height*cos(pi/2-self.angle))
+
+        return (self.origine,point_1,point_2,point_3,self.origine[1])
 
 class Triangle(Shape):
     def __init__(self, vertex1: Point, vertex2: Point, vertex3: Point):
