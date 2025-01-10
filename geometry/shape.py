@@ -1,5 +1,7 @@
 from geometry.vector import *
 from geometry.utils import squared_distance, barycenter
+from math import sin,cos,tan,atan,sqrt,pi
+
 
 class Shape:
     def __init__(self):
