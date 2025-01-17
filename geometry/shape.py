@@ -1,5 +1,5 @@
 from math import sin, cos, tan, atan, sqrt, pi
-
+from geometry.line import *
 from geometry.utils import squared_distance, barycenter, has_duplicates
 from geometry.vector import *
 
