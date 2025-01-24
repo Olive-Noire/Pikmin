@@ -19,4 +19,5 @@ class Entity:
     
     def render(self):
         if type(self.collision_box) == Circle:
+            pass
             # afficher un cercle
