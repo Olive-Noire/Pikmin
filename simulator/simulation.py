@@ -1,67 +1,87 @@
-import pygame, sys
-pygame.init()
+from simulator.action import *
+from simulator.camera import *
 
-from simulator.simulation import *
-from physics.entity import *
-from geometry.utils import *
+class Simulation:
+    count = 0
 
-width, height = 640, 480
-screen = pygame.display.set_mode((width, height))
+    def __init__(self, update_per_second: float, display_per_second = None, state = False):
+        Simulation.count += 1
 
-s = Simulation(1, 1, True)
-s.set_state(True)
+        self._identifiant = Simulation.count
 
-s.add_entity(Entity([Circle(Vector(320, 240), 50)], 10, Vector(0.01, 0.01)))
-
-arrow = [False]*4 # right, left, up, down
-while s.get_state():
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            s.set_state(False)
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_RIGHT:
-                arrow[0] = True
-            if event.key == pygame.K_LEFT:
-                arrow[1] = True
-            if event.key == pygame.K_UP:
-                arrow[2] = True
-            if event.key == pygame.K_DOWN:
-                arrow[3] = True
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_RIGHT:
-                arrow[0] = False
-            if event.key == pygame.K_LEFT:
-                arrow[1] = False
-            if event.key == pygame.K_UP:
-                arrow[2] = False
-            if event.key == pygame.K_DOWN:
-                arrow[3] = False
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            for key in s.get_entities():
-                if Vector(*pygame.mouse.get_pos()) in s.get_entities()[key].get_body()[0]:
-                    s.set_editing(True, key)
+        self._actions_stack = []
+        self._canceled_actions_stack = []
+        
+        self._entities = dict()
+        
+        self._update_per_second = self._display_per_second = update_per_second
+        
+        if not(display_per_second is None):
+            self._display_per_second = display_per_second
+        
+        self._camera = Camera(Vector(0, 0), 1)
+        
+        self._state = False
+        self._editing = False
+        self._editing_id = None
     
-    camera_speed = 0.5
-    if arrow[0]:
-        s.moove_camera(camera_speed, 0)
-    if arrow[1]:
-        s.moove_camera(-camera_speed, 0)
-    if arrow[2]:
-        s.moove_camera(0, -camera_speed)
-    if arrow[3]:
-        s.moove_camera(0, camera_speed)
-
-    screen.fill((0, 0, 0))
-
-    s.update()
-    s.display_on(screen)
-
-    is_editing, id_ent = s.on_editing()
-    if is_editing:
-        center = s.get_entities()[id_ent].get_body()[0].get_center()
-        grey = 3*norm(center)%256
-        pygame.draw.rect(screen, (200, 200, 200), pygame.rect.Rect(0, 0, width//3, height))
+    def moove_camera(self, x, y):
+        self._camera.position[0] += x
+        self._camera.position[1] += y
     
-    pygame.display.update()
+    def set_editing(self, mode, identifiant):
+        self._editing = mode
+        self._editing_id = identifiant
 
-pygame.quit()
+    def on_editing(self):
+        return self._editing, self._editing_id
+
+    def update(self):
+        for e in self._entities.values():
+            e.update(1/self._update_per_second)
+    
+    def display_on(self, surface):
+        for e in self._entities.values():
+            e.display_on(surface, self._camera)
+    
+    def __del__(self):
+        Simulation.count -= 1
+    
+    def get_state(self):
+        return self._state
+
+    def get_entities(self):
+        return self._entities
+    
+    def set_state(self, state: bool):
+        self._state = state
+    
+    def set_update_per_second(self, update_per_second):
+        self._update_per_second = update_per_second
+    
+    def set_display_per_second(self, display_per_second):
+        self._display_per_second = display_per_second
+    
+    def add_entity(self, e):
+        self._entities[len(self._entities)] = e
+
+    def execute_action(self, action):
+        action.apply(self._entities)
+
+    def save(file_path):
+        pass
+
+def load_simulation(file_path):
+    pass
+
+"""
+s = Simulation()
+a = Action(0, [15, "caca"])
+b = Action(0, [21, "skibidi"])
+
+s.execute_action(a)
+s.execute_action(b)
+print(s.get())
+s.execute_action(Action(1, [21]))
+print(s.get())
+"""
