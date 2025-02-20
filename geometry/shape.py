@@ -1,26 +1,7 @@
 from math import sin, cos, tan, atan, sqrt, pi
-from geometry.line import *
-from geometry.utils import squared_distance, barycenter, has_duplicates
-from geometry.vector import *
-
-class Segment:
-    def __init__(self, endpoint1: Vector, endpoint2: Vector):
-        assert(endpoint1 != endpoint2)
-        self._endpoints = [endpoint1, endpoint2]
-
-    def get_endpoints(self):
-        return self._endpoints
-    
-    def get_coefficients(self):
-        return self._endpoints[0][1]-self._endpoints[1][1], self._endpoints[1][0]-self._endpoints[0][0], determinant(*self._endpoints)
-    
-    def __and__(self, other):
-        if type(other) == Segment:
-            A, B, C, D = *self._endpoints, *other._endpoints
-            CD = D-C
-
-            d = determinant(B-A, CD)
-            return d != 0 and 0 <= determinant(C-A, CD)/d <= 1
+from line import Ray,Segment,Line
+from utils import squared_distance, barycenter, has_duplicates
+from vector import *
 
 class Shape:
     def __init__(self):
@@ -78,10 +59,17 @@ class Polygon(Shape):
     def __init__(self, vertices: list):
         assert(len(vertices) >= 3 and not(has_duplicates(vertices)))
         self._vertices = vertices
-    
+
     def get_center(self):
         return barycenter(self._vertices)
-    
+
+    def get_segments(self):
+        liste=[]
+        for i in range(len(self._vertices)):
+            liste.append(Segment(self._vertices[i],self._vertices[i-1]))
+        return liste
+        
+
     def get_vertices(self):
         return self._vertices
     
@@ -94,14 +82,40 @@ class Polygon(Shape):
     def __contains__(self, other):
         # A vector is similar to a point
         assert(type(other) == Vector)
+        x,y= other.get_components()
 
+        random_point=Vector(x-1,y-1)
+        ray=Ray(other,random_point)
+        intercounter=0
         for i in range(len(self._vertices)):
+            
             A, B = self._vertices[i], self._vertices[(i+1)%len(self._vertices)]
-            if determinant(B-A, other-A) < 0:
-                return False
+            seg=Segment(A,B)
+            if seg & ray:
+                intercounter+=1
         
-        return True
+        return intercounter%2==1
     
     def __and__(self, other):
-        if type(other) == Segment:
-            pass
+        inters=[]
+        liste=self.get_segments()
+        for i in liste:
+            inters+=other&i
+            if other&i!=[]:
+                if type(other)==Segment:
+
+                    print(other.get_endpoints(),i.get_endpoints())
+        return inters
+
+one=Vector(-1,-5)
+two=Vector(1,-6)
+c=Vector(3,-5)
+d=Vector(2,-4)
+e=Vector(1,-4)
+f=Polygon([one,two,c,d,e])
+g=Vector(7,0)
+h=Vector(4,-4)
+j=Vector(5,-2)
+m=Vector(1,-5)
+cte=Polygon([g,h,j,m])
+print(f&cte)

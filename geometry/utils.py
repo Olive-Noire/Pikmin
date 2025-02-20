@@ -1,4 +1,4 @@
-from geometry.vector import *
+from vector import *
 from math import sqrt
 
 def squared_norm(v: Vector):
@@ -14,7 +14,7 @@ def distance(a: Vector, b: Vector):
     return sqrt(squared_distance(a, b))
 
 def barycenter(points: list):
-    return sum(vectors, start = Vector(0, 0))/len(points) # mean of components
+    return sum(points, start = Vector(0, 0))/len(points) # mean of components
 
 def has_duplicates(l: list):
     already_seen = set()

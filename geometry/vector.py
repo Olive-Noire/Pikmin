@@ -38,7 +38,10 @@ class Vector:
     def __rmul__(self, scalar: float):
         return self*scalar
     
-    def __div__(self, scalar: float):
+    def __truediv__(self, scalar: float):
+        return Vector(self._x/scalar, self._y/scalar)
+    
+    def __rtruediv__(self, scalar: float):
         return Vector(self._x/scalar, self._y/scalar)
     
     def __eq__(self, other):
@@ -53,3 +56,4 @@ class Vector:
 # Area of the parallelogram
 def determinant(a: Vector, b: Vector):
     return a[0]*b[1]-a[1]*b[0]
+
