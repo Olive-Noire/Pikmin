@@ -20,40 +20,39 @@ class Circle(Shape):
     def get_radius(self):
         return self._radius
     
-    def set_center(self, center):
+    def set_center(self, center: Vector):
         self._center = center
     
-    def set_radius(self, radius):
+    def set_radius(self, radius: float):
         assert(radius > 0)
         self._radius = radius
+        
+    def __contains__(self, point: Vector):
+        return squared_distance(self._center, point) <= self._radius**2
     
     def __and__(self, other):
         if type(other) == Segment:
-            return other&self
-
-            a, b, c = other.get_coefficients()
-
-            great_a = 1+(a/b)**2
-            great_b = -2*self._center[0]+2*(a/b)*(c/b+self._center[1])
-            great_c = self._center[0]**2+(c/b+self._center[1])**2-self._radius**2
-
-            return great_b**2 >= 4*great_a*great_c
+            a, b, c = get_line_coefficients(*other.get_endpoints())
+            if b == 0: # segment vertical
+                ordinates = solve_quadratic_equation(1, -2*self._center[1], self._center[1]**2-self._radius**2+(c/a-self._center[0])**2)
+                return {point for point in [Vector(-c/a, y) for y in ordinates] if point in other}
+            else:
+                abscissa = solve_quadratic_equation(1+(a/b)**2, -2*self._center[0]+2*(a/b)*(c/b+self._center[1]), self._center[0]**2+(c/b+self._center[1])**2-self._radius**2)
+                return {point for point in [Vector(x, -(a*x+c)/b) for x in abscissa] if point in other}
+            
         elif type(other) == Circle:
-            return squared_distance(self._center, other._center) <= (self._radius+other._radius)**2
+            if squared_distance(self._center, other._center) > (self._radius+other._radius)**2:
+                return set()
+            
+            squared_D = squared_distance(self._center, other._center)
+            squared_radius = [self._radius**2, other._radius**2]
+            squared_height = (squared_radius[0]*squared_radius[1]-(squared_D-squared_radius[0]-squared_radius[1])**2/4)/squared_D
+            direction = normalize(other._center-self._center)
 
-class Rectangle(Shape):
-    def __init__(self, point_random: Vector, width: float, height: float, angle: float):
-        self.angle = angle
-        self.origin = point_random
-        self.width = width
-        self.height = height
+            I = self._center+sqrt(squared_radius[0]-squared_height)*direction
+            gap = rotate(direction, pi/2)*sqrt(squared_height)
 
-    def get_points(self):
-        point_1 = Vector(self.origin[0]+self.width*sin(self.angle), self.origin[1]+self.width*cos(self.angle))
-        point_2 = Vector(point_1[0]+self.height*sin(self.angle-pi/2), point_1[1]+self.height*cos(self.angle-pi/2))
-        point_3 = Vector(self.origin[0]+self.height*sin(self.angle-pi/2), self.origin[1]+self.height*cos(pi/2-self.angle))
-
-        return (self.origin, point_1, point_2, point_3, self.origin[1])
+            return {I-gap, I+gap}
 
 class Polygon(Shape):
     def __init__(self, vertices: list):
