@@ -32,13 +32,13 @@ class Line:
 
         det = determinant(AB, CD)
         if abs(det) == 0:
-            return []
+            return set()
         
         I = C+(determinant(C-A, AB)/det)*CD
         if I in other:
-            return [I]
+            return {I}
         else:
-            return []
+            return set()
         
 class Ray:
     def __init__(self, startpoint: Vector, endpoint: Vector):
@@ -102,7 +102,7 @@ class Segment:
         line_AB = Line(AB, A)
         line_CD = Line(CD, C)
 
-        if line_AB&other == [] or line_CD&self == []:
-                return []
+        if line_AB&other == set() or line_CD&self == set():
+                return set()
         
         return line_AB&line_CD
