@@ -1,5 +1,7 @@
+from math import sin, cos
+
 class Vector:
-    def __init__(self, x = 0, y = 0):
+    def __init__(self, x = float(0), y = float(0)):
         self._x = x
         self._y = y
     
@@ -9,6 +11,11 @@ class Vector:
     def set_components(self, x: float, y: float):
         self._x = x
         self._y = y
+    
+    def rotate(self, angle, center):
+        v = self-center
+        v = Vector(v[0]*cos(angle)-v[1]*sin(angle), v[0]*sin(angle)+v[1]*cos(angle))
+        return v+center
     
     def __getitem__(self, index: int):
         assert(index == 0 or index == 1)
@@ -38,10 +45,7 @@ class Vector:
     def __rmul__(self, scalar: float):
         return self*scalar
     
-    def __truediv__(self, scalar: float):
-        return Vector(self._x/scalar, self._y/scalar)
-    
-    def __rtruediv__(self, scalar: float):
+    def __div__(self, scalar: float):
         return Vector(self._x/scalar, self._y/scalar)
     
     def __eq__(self, other):
@@ -52,8 +56,11 @@ class Vector:
     
     def __hash__(self):
         return (self._x, self._y).__hash__()
+    
+    def __iter__(self):
+            yield self._x
+            yield self._y
 
 # Area of the parallelogram
 def determinant(a: Vector, b: Vector):
     return a[0]*b[1]-a[1]*b[0]
-
