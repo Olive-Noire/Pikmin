@@ -67,7 +67,6 @@ class Polygon(Shape):
         for i in range(len(self._vertices)):
             liste.append(Segment(self._vertices[i],self._vertices[i-1]))
         return liste
-        
 
     def get_vertices(self):
         return self._vertices
@@ -81,19 +80,14 @@ class Polygon(Shape):
     def __contains__(self, other):
         # A vector is similar to a point
         assert(type(other) == Vector)
-        x,y= other.get_components()
 
-        random_point=Vector(x-1,y-1)
-        ray=Ray(other,random_point)
-        intercounter=0
+        ray = Ray(other, Vector(0, 0))
+        flag = False
         for i in range(len(self._vertices)):
-            
-            A, B = self._vertices[i], self._vertices[(i+1)%len(self._vertices)]
-            seg=Segment(A,B)
-            if seg & ray:
-                intercounter+=1
+            if ray&Segment(self._vertices[i], self._vertices[(i+1)%len(self._vertices)]):
+                flag = not(flag)
         
-        return intercounter%2==1
+        return flag
     
     def __and__(self, other):
         inters=[]
