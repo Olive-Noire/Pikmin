@@ -1,4 +1,5 @@
 from vector import *
+
 from math import sqrt
 
 def squared_norm(v: Vector):
