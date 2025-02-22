@@ -55,6 +55,8 @@ class Circle(Shape):
             gap = rotate(direction, pi/2)*sqrt(squared_height)
 
             return {I-gap, I+gap}
+        elif type(other) == Polygon:
+            return other&self
 
 class Polygon(Shape):
     def __init__(self, vertices: list):
