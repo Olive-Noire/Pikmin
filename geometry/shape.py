@@ -85,7 +85,9 @@ class Polygon(Shape):
         ray = Ray(other, Vector(0, 0))
         flag = False
         for i in range(len(self._vertices)):
-            if ray&Segment(self._vertices[i], self._vertices[(i+1)%len(self._vertices)]):
+            A, B = self._vertices[i], self._vertices[(i+1)%len(self._vertices)]
+            intersection = ray&Segment(A, B)
+            if intersection and not(A in intersection or B in intersection):
                 flag = not(flag)
         
         return flag
