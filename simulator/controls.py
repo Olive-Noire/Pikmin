@@ -7,8 +7,7 @@ class Mouse:
         self._right_click = self._wheel_click = self._left_click = False
         self.clear()
 
-        self._wheel = 0
-        self._wheel_change = 0
+        self._wheel = self._wheel_change = 0
 
     def update(self, event: pygame.event):
         if event.type == pygame.MOUSEMOTION:
