@@ -1,6 +1,6 @@
 from math import sqrt, pi
 
-from geometry.line import Segment, Ray, get_line_coefficients
+from geometry.line import Segment, Ray, Line, get_line_coefficients
 from geometry.utils import squared_distance, barycenter, has_duplicates, solve_quadratic_equation, normalize, determinant
 from geometry.transformations import rotate
 from geometry.vector import Vector
@@ -33,7 +33,7 @@ class Circle(Shape):
         return squared_distance(self._center, point) <= self._radius**2
     
     def __and__(self, other):
-        if type(other) == Segment:
+        if type(other) == Segment or type(other) == Line or type(other) == Ray:
             a, b, c = get_line_coefficients(*other.get_endpoints())
             if b == 0: # segment vertical
                 ordinates = solve_quadratic_equation(1, -2*self._center[1], self._center[1]**2-self._radius**2+(c/a-self._center[0])**2)
@@ -55,7 +55,7 @@ class Circle(Shape):
             gap = rotate(direction, pi/2)*sqrt(squared_height)
 
             return {I-gap, I+gap}
-        elif type(other) == Polygon:
+        else:
             return other&self
 
 class Polygon(Shape):
