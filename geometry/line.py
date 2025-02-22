@@ -23,7 +23,8 @@ class Line:
         return abs(a*point[0]+b*point[1]+c) <= 1e-7
 
     def __and__(self, other):
-        assert(type(other) == Segment or type(other) == Ray or type(other) == Line)
+        if not(type(other) == Segment or type(other) == Ray or type(other) == Line):
+            return other&self
 
         A, B = self.get_endpoints()
         C, D = other.get_endpoints()
@@ -61,8 +62,8 @@ class Ray:
 
         return False
 
-    def __and__(self, s):
-        return s&self
+    def __and__(self, other):
+        return other&self
     
 class Segment:
     def __init__(self, endpoint1: Vector, endpoint2: Vector):
@@ -90,9 +91,7 @@ class Segment:
         return False
 
     def __and__(self, other):
-        assert(type(other) == Line or type(other) == Ray)
-
-        if type(other) == Line:
+        if not(type(other) == Segment or type(other) == Ray):
             return other&self
 
         A, B, C, D = *self._endpoints, *other.get_endpoints()
