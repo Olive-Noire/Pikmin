@@ -1,7 +1,9 @@
-from math import sin, cos, tan, atan, sqrt, pi
-from line import Ray,Segment,Line
-from utils import squared_distance, barycenter, has_duplicates
-from vector import *
+from math import sqrt, pi
+
+from geometry.line import Segment, Ray, get_line_coefficients
+from geometry.utils import squared_distance, barycenter, has_duplicates, solve_quadratic_equation, normalize, determinant
+from geometry.transformations import rotate
+from geometry.vector import Vector
 
 class Shape:
     def __init__(self):
@@ -26,7 +28,7 @@ class Circle(Shape):
     def set_radius(self, radius: float):
         assert(radius > 0)
         self._radius = radius
-        
+
     def __contains__(self, point: Vector):
         return squared_distance(self._center, point) <= self._radius**2
     
@@ -58,18 +60,15 @@ class Polygon(Shape):
     def __init__(self, vertices: list):
         assert(len(vertices) >= 3 and not(has_duplicates(vertices)))
         self._vertices = vertices
-
+    
     def get_center(self):
         return barycenter(self._vertices)
-
-    def get_segments(self):
-        liste=[]
-        for i in range(len(self._vertices)):
-            liste.append(Segment(self._vertices[i],self._vertices[i-1]))
-        return liste
-
+    
     def get_vertices(self):
         return self._vertices
+    
+    def __add__(self, v: Vector):
+        return Polygon([self._vertices[i]+v for i in range(len(self._vertices))])
     
     def __getitem__(self, index):
         return self._vertices[index]
@@ -90,25 +89,8 @@ class Polygon(Shape):
         return flag
     
     def __and__(self, other):
-        inters=[]
-        liste=self.get_segments()
-        for i in liste:
-            inters+=other&i
-            if other&i!=[]:
-                if type(other)==Segment:
+        intersection = set()
+        for i in range(len(self._vertices)):
+            intersection |= other&Segment(self._vertices[i], self._vertices[(i+1)%len(self._vertices)])
 
-                    print(other.get_endpoints(),i.get_endpoints())
-        return inters
-
-one=Vector(-1,-5)
-two=Vector(1,-6)
-c=Vector(3,-5)
-d=Vector(2,-4)
-e=Vector(1,-4)
-f=Polygon([one,two,c,d,e])
-g=Vector(7,0)
-h=Vector(4,-4)
-j=Vector(5,-2)
-m=Vector(1,-5)
-cte=Polygon([g,h,j,m])
-print(f&cte)
+        return intersection
