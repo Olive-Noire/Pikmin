@@ -73,7 +73,7 @@ Pour l'instant il n'y en a qu'une seule : `gui.log` qui permet d'écrire dans la
 <ins>Note :</ins> on peut penser à ajouter une fonction `gui.log_error` qui pourrait log les erreurs on encore copier les logs dans un fichier.
 
 ### Les flags
-Il existe un seul flag pour l'instant : `gui.track_updates` qui une fois sur `True`, permet de tracker à chaque fois qu'une texture est mise à jour (via `gui.log`). Vous l'aurez compris il sert à vérifier qu'une texture n'est pas modifier 40 fois par seconde (ça m'a déjà beaucoup servi).
+Il existe un seul flag pour l'instant : `gui.track_updates` qui une fois sur `True`, permet de tracker à chaque fois qu'une texture est mise à jour (via `gui.log`). Vous l'aurez compris il sert à vérifier qu'une texture n'est pas modifiée 40 fois par seconde (ça m'a déjà beaucoup servi).
 
 ### Un framerate indépendant
 À priori, le programme disposera de quatre types de framerate : ceux pour l'affichage d'une simulation (objectif : 24 par simulation), ceux pour la mise à jour d'une simulation (objectif : 60 par simulation), un pour l'affichage de la GUI (objectif : 10) et un pour la mise à jour de la GUI (objectif : 5).
