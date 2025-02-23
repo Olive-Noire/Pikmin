@@ -69,6 +69,7 @@ Le fichier `gui.__init__.py` est spécial car il permet la configuration et le d
 
 ### Les fonctions utilitaires
 Pour l'instant il n'y en a qu'une seule : `gui.log` qui permet d'écrire dans la console un message (avec le préfixe "GUI :" en bleu).
+
 <ins>Note :</ins> on peut penser à ajouter une fonction `gui.log_error` qui pourrait log les erreurs on encore copier les logs dans un fichier.
 
 ### Les flags
