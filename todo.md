@@ -53,7 +53,7 @@ Un exemple de fonction interne commune à tous les éléments de GUI est `_upgra
 Une dernière chose à améliorer (et qui rendra la GUI beaucoup plus rapide) c'est la mise à jour des surfaces UNIQUEMENT lorsqu'elles ont été modifiées et dans ce cas on utilise le moins de modifications possibles.
 Prenons les onglets par exemple, actuellement lorsque l'on passe la souris sur un onglet voici ce qu'il se passe :
 <ul>
-  <li>Tout la surface est remplie avec du blanc.</li>
+  <li>Toute la surface est remplie avec du blanc.</li>
   <li>Le texte est mis-à-jour (couleur mise-à-jour si la souris est dessus) puis ajouter sur la surface.</li>
   <li>Un carré blanc sur l'emplacement de la croix est mise-à-jour (couleur modifiée si jamais y a un clique) puis ajouter sur la surface.</li>
   <li>La croix est mise-à-jour (rouge si la souris est dessus et noire sinon) puis ajouter sur la surface.</li>
