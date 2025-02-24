@@ -6,7 +6,7 @@ Dans **pygame** les polices d'écriture sont des objets (classe : `pygame.font.F
 
 <ins>Note</ins> : cet objet dépend du nom de la police mais aussi de sa taille, ainsi dans **pygame** les polices "arial" taille 10 et "arial" taille 25 sont différentes.
 
-Où est-ce que cela est problématique ? Par exemple pour gérer une liste d'onglet, la même police sera rechargée à chaque fois pour chaque onglet, si on a 10 polices il y a 10 objets `pygame.font.Font` si il y a 100 onglets il y a 100 fois la même police chargée dans la mémoire (100 fois la même variable)...
+Où est-ce que cela est problématique ? Par exemple pour gérer une liste d'onglets, la même police sera rechargée à chaque fois pour chaque onglet, si on a 10 onglets il y a 10 objets `pygame.font.Font` si il y a 100 onglets il y a 100 fois la même police chargée dans la mémoire (100 fois la même variable)...
 
 Une idée pour améliorer cela est d'utiliser un système de "shared fonts" (je ne sais pas si le nom est officiel). En gros à traver tout le projet, des polices communes seront utilisées. Lorsqu'une police est demandée pour la toute première fois, alors elle est chargée. Ainsi tous les onglets utilisant la police "associate sans medium" taille 15 utiliseront exactement la même variable `pygame.font.Font` et cette variable ne sera pas dupliquée à chaque onglet.
 
