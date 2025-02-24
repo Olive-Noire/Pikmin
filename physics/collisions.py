@@ -42,8 +42,8 @@ def sweep_and_prune(shapes): # one dimensional with insertion sort
     liste_triee = [i[1] for i in frames_bank]
     return coll_to_check, liste_triee
 
-def static_resolution(shapes):
+def static_resolution(couples):
     pass
 
-def dynamic_resolution(shapes):
+def dynamic_resolution(couples):
     pass
