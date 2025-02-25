@@ -1,5 +1,7 @@
 import pygame.font
 
+import gui
+
 class Text:
     default_font = pygame.font.get_fonts()[0]
 
@@ -13,35 +15,48 @@ class Text:
         self._content = content
 
         self._update_font()
+
+        if gui.track_updates:
+            gui.log("updating text texture (initialization)")
         self._update_surface()
     
     def get_font(self):
         return self._font_name
     
     def set_font(self, font_name):
-        self._font_name = font_name
-        self._update_font()
+        if self._font_name != font_name:
+            self._font_name = font_name
+            self._update_font()
     
     def get_font_size(self):
         return self._font_size
 
     def set_font_size(self, font_size):
-        self._font_size = font_size
-        self._update_font()
+        if self._font_size != font_size:
+            self._font_size = font_size
+            self._update_font()
 
     def get_content(self):
         return self._content
     
     def set_content(self, content: str):
-        self._content = content
-        self._update_surface()
+        if self._content != content:
+            self._content = content
+
+            if gui.track_updates:
+                gui.log("updating text texture (change of content)")
+            self._update_surface()
     
     def get_color(self):
         return self._color
     
     def set_color(self, color: tuple):
-        self._color = color
-        self._update_surface()
+        if self._color != color:
+            self._color = color
+
+            if gui.track_updates:
+                gui.log("updating text texture (change of color)")
+            self._update_surface()
 
     def surface(self):
         return self._surface
