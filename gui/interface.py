@@ -132,14 +132,17 @@ def update_toolbar_events(event):
             main_menu.set_position((0, 30+24*toggle_tablist))
     
         if main_menu[1].is_hover() and pygame.mouse.get_just_pressed()[0] and not(creating_simulation):
-            window_width, window_height = 400, 300
+            popup_width, popup_height = 400, 300
             screen_size = pygame.display.get_window_size()
-            w = pygame_gui.elements.ui_window.UIWindow(pygame.Rect((screen_size[0]-window_width)//2, (screen_size[1]-window_height)//2, window_width, window_height), manager = toolbar_manager, window_display_title = "Nouvelle simulation", draggable = False)
+            popup = pygame_gui.elements.ui_window.UIWindow(pygame.Rect((screen_size[0]-popup_width)//2, (screen_size[1]-popup_height)//2, popup_width, popup_height), manager = toolbar_manager, window_display_title = "Nouvelle simulation", draggable = False)
             
-            pygame_gui.elements.UITextBox("Nom :", pygame.Rect(0, 0, 70, 30), container = w)
-            name_input = pygame_gui.elements.UITextEntryLine(pygame.Rect(0, 0, 70, 30), initial_text = "nouvelle simulation", container = w)
+            # Saisie pour le nom
+            pygame_gui.elements.UITextBox("Nom :", pygame.Rect(20, 0, 70, 30), container = popup, visible = 0)
+            name_input = pygame_gui.elements.UITextEntryLine(pygame.Rect(90, 0, 70, 30), initial_text = "nouvelle simulation", container = popup)
+
+            # Faire les autres saisies (globalement un copié-collé puis chercher sur internet)
+            
             creating_simulation = True
-            tablist.add(name_input.get_text())
             toggle_tablist = True
             
 
