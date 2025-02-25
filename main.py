@@ -1,67 +1,62 @@
-import pygame, sys
+# Pygame
+import pygame
 pygame.init()
+pygame.font.init()
 
-from simulator.simulation import *
-from physics.entity import *
-from geometry.utils import *
+width, height = 1920, 1017
+screen = pygame.display.set_mode((width, height), pygame.RESIZABLE)
+pygame.display.set_caption("Newtonian Sandbox")
 
-width, height = 640, 480
-screen = pygame.display.set_mode((width, height))
+# GUI
+from gui.interface import *
+import gui.interface
+from gui import tick
 
-s = Simulation(1, 1, True)
-s.set_state(True)
+# Simulator
+from simulator.controls import *
+mouse = Mouse()
+keyboard = Keyboard()
 
-s.add_entity(Entity([Circle(Vector(320, 240), 50)], 10, Vector(0.01, 0.01)))
+clock = pygame.time.Clock()
 
-arrow = [False]*4 # right, left, up, down
-while s.get_state():
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            s.set_state(False)
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_RIGHT:
-                arrow[0] = True
-            if event.key == pygame.K_LEFT:
-                arrow[1] = True
-            if event.key == pygame.K_UP:
-                arrow[2] = True
-            if event.key == pygame.K_DOWN:
-                arrow[3] = True
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_RIGHT:
-                arrow[0] = False
-            if event.key == pygame.K_LEFT:
-                arrow[1] = False
-            if event.key == pygame.K_UP:
-                arrow[2] = False
-            if event.key == pygame.K_DOWN:
-                arrow[3] = False
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            for key in s.get_entities():
-                if Vector(*pygame.mouse.get_pos()) in s.get_entities()[key].get_body()[0]:
-                    s.set_editing(True, key)
-    
-    camera_speed = 0.5
-    if arrow[0]:
-        s.moove_camera(camera_speed, 0)
-    if arrow[1]:
-        s.moove_camera(-camera_speed, 0)
-    if arrow[2]:
-        s.moove_camera(0, -camera_speed)
-    if arrow[3]:
-        s.moove_camera(0, camera_speed)
-
+run = True
+while run:
     screen.fill((0, 0, 0))
 
-    s.update()
-    s.display_on(screen)
+    keyboard.clear()
+    mouse.clear()
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
 
-    is_editing, id_ent = s.on_editing()
-    if is_editing:
-        center = s.get_entities()[id_ent].get_body()[0].get_center()
-        grey = 3*norm(center)%256
-        pygame.draw.rect(screen, (200, 200, 200), pygame.rect.Rect(0, 0, width//3, height))
+        # updating controls
+        mouse.update(event)
+        keyboard.update(event)
+
+        # updating gui
+        update_toolbar_events(event)
+
+    # updating GUI
+    update_tablist_events(mouse)
+    toolbar_manager.update(tick)
+
+    # key events
+    if keyboard.key_down("f11"):
+        pygame.display.toggle_fullscreen()
+
+    # updating current tab
+    if tablist.get_current() == -1:
+        main_menu.update(mouse)
+        screen.blit(main_menu.surface(), main_menu.get_position())
+
+    # draw GUI
+    draw_tablist(screen)
+    draw_toolbar(screen)
+
+    # drawing current tab
     
-    pygame.display.update()
+    pygame.display.flip()
+    clock.tick(60)
 
 pygame.quit()
+pygame.font.quit()
