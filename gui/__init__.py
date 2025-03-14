@@ -11,7 +11,7 @@ tick = gui_clock.tick(60)/1000.0
 
 # fonts
 log("loading fonts...")
-import gui.fonts
+# import gui.fonts
 
 # flags
 track_updates = False
