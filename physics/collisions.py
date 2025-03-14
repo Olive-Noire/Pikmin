@@ -56,22 +56,9 @@ def dynamic_resolution(ent1, ent2):
     first, second = ent1.body, ent2.body
     v1, v2 = ent1.get_velocity(), ent2.get_velocity()
     mass1, mass2 = ent1.get_mass(), ent2.get_mass()
+
+    dir = normalize(first.get_center()-second.get_center())
+    dir *= 2*dot_product(v1-v2, dir)/(mass1+mass2)
     
     if type(first) == type(second) == Circle:
-        c1, c2 = first.get_center(), second.get_center()
-        dist = distance(c1,c2)
-        normal = (c2-c1)*(1/dist)
-
-        x, y = normal.get_components()
-        tangeantal = Vector(-y, x)
-
-        dpt1 = dot_product(v1, tangeantal)
-        dpt2 = dot_product(v2, tangeantal)
-        dpn1 = dot_product(v1, normal)
-        dpn2 = dot_product(v2, normal)
-
-        #conservation of momentum
-        m1 = (dpn1*(mass1-mass2)+2*mass2*dpn2)/(mass2+mass1)
-        m2 = (dpn2*(mass2-mass1)+2*mass1*dpn1)/(mass2+mass1)
-
-        return v1*dpt1+normal*m1, v2*dpt2+normal*m2
+        return v1-mass2*dir, v2+mass1*dir, 
