@@ -27,14 +27,17 @@ class Simulation:
         
         self._camera = Camera(Vector(0, 0), 1)
         
-        self._state = False
+        self._state = state
         self._editing = False
         self._editing_id = None
     
-    def moove_camera(self, x, y):
+    def move_camera(self, x, y):
         self._camera.position[0] += x
         self._camera.position[1] += y
     
+    def get_camera(self):
+        return self._camera
+
     def set_editing(self, mode, identifiant):
         self._editing = mode
         self._editing_id = identifiant
@@ -43,27 +46,36 @@ class Simulation:
         return self._editing, self._editing_id
 
     def update(self):
+        if not(self._state):
+            return
+
         couples, shapes = sweep_and_prune(self._entities)
         for c in couples:
             if self._entities[c[0]].body&self._entities[c[1]].body != set():
-                forces = dynamic_resolution(self._entities[c[0]], self._entities[c[1]])
-
                 deplacement = static_resolution(self._entities[c[0]].body, self._entities[c[1]].body)
                 self._entities[c[0]].body.set_center(self._entities[c[0]].body.get_center()+deplacement[0])
                 self._entities[c[1]].body.set_center(self._entities[c[1]].body.get_center()+deplacement[1])
 
-                self._entities[c[0]].apply_force(forces[0])
-                self._entities[c[1]].apply_force(forces[1])
+                speeds = dynamic_resolution(self._entities[c[0]], self._entities[c[1]])
+
+                self._entities[c[0]].set_velocity(speeds[0])
+                self._entities[c[1]].set_velocity(speeds[1])
 
         for key in self._entities:
+            #self._entities[key].apply_force(Vector(0, -0.5))
             self._entities[key].update(1/self._update_per_second)
     
     def display_on(self, surface):
         surface.fill((0, 0, 0))
 
+        vect_to_tuple = lambda v: (v[0]+self._camera.position[0], self._camera.position[1]-v[1])
         for e in self._entities.values():
             if type(e.body) == Circle:
-                draw.circle(surface, (255, 255, 255), (e.body.get_center()[0], -e.body.get_center()[1]), e.body.get_radius(), 50)
+                draw.circle(surface, (255, 255, 255), vect_to_tuple(e.body.get_center()), e.body.get_radius(), 0)
+                draw.line(surface, (255, 0, 0), vect_to_tuple(e.body.get_center()), vect_to_tuple(e.body.get_center()+e.get_velocity()), 2)
+
+                for f in e.get_forces():
+                    draw.line(surface, (0, 0, 255), vect_to_tuple(e.body.get_center()), vect_to_tuple(e.body.get_center()+f), 2)
 
     def __del__(self):
         Simulation.count -= 1
