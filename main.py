@@ -3,13 +3,12 @@ import pygame
 pygame.init()
 pygame.font.init()
 
-width, height = 1920, 1017
+width, height = 1200, 700
 screen = pygame.display.set_mode((width, height), pygame.RESIZABLE)
 pygame.display.set_caption("Newtonian Sandbox")
 
 # GUI
 from gui.interface import *
-import gui.interface
 from gui import tick
 
 # Simulator
@@ -17,7 +16,14 @@ from simulator.controls import *
 mouse = Mouse()
 keyboard = Keyboard()
 
+from simulator.simulation import *
+from physics.entity import *
+
 clock = pygame.time.Clock()
+
+simulations = [Simulation(24, 24, True)]
+tablist.add("CACA")
+simulations[0].add_entity(Entity(Vector(100, 0), Circle(Vector(100, -200), 50), 20))
 
 run = True
 while run:
@@ -48,6 +54,9 @@ while run:
     if tablist.get_current() == -1:
         main_menu.update(mouse)
         screen.blit(main_menu.surface(), main_menu.get_position())
+    else:
+        simulations[tablist.get_current()].update()
+        simulations[tablist.get_current()].display_on(screen)
 
     # draw GUI
     draw_tablist(screen)
