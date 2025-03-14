@@ -1,6 +1,12 @@
 from simulator.action import *
 from simulator.camera import *
 
+from geometry.shape import *
+
+from physics.collisions import *
+
+from pygame import draw
+
 class Simulation:
     count = 0
 
@@ -37,13 +43,24 @@ class Simulation:
         return self._editing, self._editing_id
 
     def update(self):
-        for e in self._entities.values():
-            e.update(1/self._update_per_second)
+        couples, shapes = sweep_and_prune([self._entities[e].body for e in self._entities])
+        print(couples)
+        for c in couples:
+            static_resolution(*c)
+
+        dynamic_resolution(couples)
+
+        for key in self._entities:
+            self._entities[key].apply_force(Vector(0, -60))
+            self._entities[key].update(1/self._update_per_second)
     
     def display_on(self, surface):
+        surface.fill((0, 0, 0))
+
         for e in self._entities.values():
-            e.display_on(surface, self._camera)
-    
+            if type(e.body) == Circle:
+                draw.circle(surface, (255, 255, 255), (e.body.get_center()[0], -e.body.get_center()[1]), e.body.get_radius(), 50)
+
     def __del__(self):
         Simulation.count -= 1
     
