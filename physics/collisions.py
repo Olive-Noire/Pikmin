@@ -1,4 +1,8 @@
 from geometry.shape import Circle, Polygon
+from geometry.utils import distance
+from geometry.vector import *
+from geometry.utils import *
+from math import pi
 
 def framing(fig):
     if type(fig) == Circle:
@@ -42,8 +46,34 @@ def sweep_and_prune(shapes): # one dimensional with insertion sort
     liste_triee = [i[1] for i in frames_bank]
     return coll_to_check, liste_triee
 
-def static_resolution(couples):
-    pass
+def static_resolution(obj1,obj2):
+    first,second=obj1.get_position(),obj2.get_position()
+    if type(first)==type(second)==Circle:
+        c1,c2,r1,r2=first.get_center(),second.get_center(),first.get_radius(),second.get_radius()
+        dist=(c1-c2)*(((r1+r2)/distance(c1,c2)-1))
+        first.set_center(c1+dist*(1/2))
+        second.set_center(c1+(-1)*dist*(1/2))
+        return (first,second)
 
-def dynamic_resolution(couples):
-    pass
+def dynamic_resolution(obj1,obj2):
+    first,second=obj1.get_position(),obj2.get_position()
+    v1,v2=obj1.get_velocity,obj2.get_velocity()
+    mass1,mass2=obj1.get_mass(),obj2.get_mass()
+    if type(first)==type(second)==Circle:
+        c1,c2,r1,r2=first.get_center(),second.get_center(),first.get_radius(),second.get_radius()
+        dist=distance(c1,c2)
+        normal=(c2-c1)*(1/dist)
+        x,y=normal.get_components()
+        tangeantal=Vector(-y,x)
+        dpt1=dot_product(v1,tangeantal)
+        dpt2=dot_product(v2,tangeantal)
+        dpn1=dot_product(v1,normal)
+        dpn2=dot_product(v2,normal)
+        second.set_center(c1+(-1)*dist*(1/2))
+        tx,ty=tangeantal.get_components()
+
+        #conservation of momentum
+        m1=(dpn1*(mass1-mass2)+2*mass2*dpn2)/(mass2+mass1)
+        m2=(dpn2*(mass2-mass1)+2*mass1*dpn1)/(mass2+mass1)
+        obj1.apply_force(v1*dpt1+normal*m1)
+        obj2.apply_force(v2*dpt2+normal*m2)
