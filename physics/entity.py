@@ -12,6 +12,8 @@ class Entity:
         self._forces.append(vect)
 
     def update(self, dt):
+        print(self._forces)
+
         acceleration = sum(self._forces, start = Vector(0, 0))*(1/self._mass)
         self._velocity += dt*acceleration
         self._collision_box.set_center(self._collision_box.get_center()+dt*self._velocity)
