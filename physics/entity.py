@@ -10,9 +10,12 @@ class Entity:
     
     def apply_force(self, vect):
         self._forces.append(vect)
+    
+    def get_forces(self):
+        return self._forces
 
     def update(self, dt):
-        print(self._forces)
+        #print(self._velocity)
 
         acceleration = sum(self._forces, start = Vector(0, 0))*(1/self._mass)
         self._velocity += dt*acceleration
@@ -22,6 +25,9 @@ class Entity:
     
     def get_velocity(self):
         return self._velocity
+    
+    def set_velocity(self, velocity):
+        self._velocity = velocity
     
     def get_position(self):
         return self.collision_box.get_center()
