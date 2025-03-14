@@ -43,15 +43,19 @@ class Simulation:
         return self._editing, self._editing_id
 
     def update(self):
-        couples, shapes = sweep_and_prune([self._entities[e].body for e in self._entities])
-        print(couples)
+        couples, shapes = sweep_and_prune(self._entities)
         for c in couples:
-            static_resolution(*c)
+            if self._entities[c[0]].body&self._entities[c[1]].body != set():
+                forces = dynamic_resolution(self._entities[c[0]], self._entities[c[1]])
 
-        dynamic_resolution(couples)
+                deplacement = static_resolution(self._entities[c[0]].body, self._entities[c[1]].body)
+                self._entities[c[0]].body.set_center(self._entities[c[0]].body.get_center()+deplacement[0])
+                self._entities[c[1]].body.set_center(self._entities[c[1]].body.get_center()+deplacement[1])
+
+                self._entities[c[0]].apply_force(forces[0])
+                self._entities[c[1]].apply_force(forces[1])
 
         for key in self._entities:
-            self._entities[key].apply_force(Vector(0, -60))
             self._entities[key].update(1/self._update_per_second)
     
     def display_on(self, surface):
