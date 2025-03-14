@@ -23,7 +23,8 @@ clock = pygame.time.Clock()
 
 simulations = [Simulation(24, 24, True)]
 tablist.add("CACA")
-simulations[0].add_entity(Entity(Vector(100, 0), Circle(Vector(100, -200), 50), 20))
+simulations[0].add_entity(Entity(Vector(100, 0), Circle(Vector(100, -200), 50), 0.100001))
+simulations[0].add_entity(Entity(Vector(-100, 0), Circle(Vector(600, -200), 50), 0.1))
 
 run = True
 while run:
