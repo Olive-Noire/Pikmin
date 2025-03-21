@@ -83,7 +83,7 @@ class Interface:
         return self._elements[index]
 
 # Interface of main menu
-main_menu = Interface((0, 30), (pygame.display.get_window_position()[0], pygame.display.get_window_position()[1]-30), [
+main_menu = Interface((0, 30), (pygame.display.get_window_size()[0], pygame.display.get_window_size()[1]-30), [
     Text("Bienvenue sur Newtonian Sandbox !", font_size = 40, color = (0, 0, 0)),
     Button((0, 0), (300, 70), (254, 254, 254), (51, 51, 51), 2, Text("Nouvelle simulation", (51, 51, 51)), (30, 22), hover_text = Text("Nouvelle simulation", (39, 99, 236)), texture = textures.add_button, hover_texture = textures.add_hover_button, texture_position = (250, 24), background_color_on_click = (231, 231, 231)),
     Button((0, 0), (300, 70), (254, 254, 254), (51, 51, 51), 2, Text("Ouvrir une simulation", (51, 51, 51)), (30, 22), hover_text = Text("Ouvrir une simulation", (39, 99, 236)), texture = textures.search, hover_texture = textures.search_hover, texture_position = (250, 24), background_color_on_click = (231, 231, 231)),
