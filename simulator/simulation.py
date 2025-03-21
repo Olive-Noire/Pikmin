@@ -7,6 +7,8 @@ from physics.collisions import *
 
 from pygame import draw
 
+max_force = 0
+
 class Simulation:
     count = 0
 
@@ -30,6 +32,8 @@ class Simulation:
         self._state = state
         self._editing = False
         self._editing_id = None
+
+        self._follow = 0
     
     def move_camera(self, x, y):
         self._camera.position[0] += x
@@ -48,6 +52,10 @@ class Simulation:
     def update(self):
         if not(self._state):
             return
+        
+        #v = self._entities[self._follow].body.get_center()
+        #self._camera.position = Vector(v[0], -v[1])
+        #print(self._camera.position)
 
         couples, shapes = sweep_and_prune(self._entities)
         for c in couples:
@@ -62,8 +70,14 @@ class Simulation:
                 self._entities[c[1]].set_velocity(speeds[1])
 
         for key in self._entities:
-            #self._entities[key].apply_force(Vector(0, -0.5))
             self._entities[key].update(1/self._update_per_second)
+
+        #for key in self._entities:
+        #    for other in self._entities:
+        #        if key != other:
+        #            gravity = self._entities[key].get_mass()*self._entities[other].get_mass()/squared_distance(self._entities[key].body.get_center(), self._entities[other].body.get_center())
+        #            dir = normalize(self._entities[key].body.get_center()-self._entities[other].body.get_center())
+        #            self._entities[key].apply_force(-gravity*dir)
     
     def display_on(self, surface):
         surface.fill((0, 0, 0))
