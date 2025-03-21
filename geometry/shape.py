@@ -98,3 +98,7 @@ class Polygon(Shape):
             intersection |= other&Segment(self._vertices[i], self._vertices[(i+1)%len(self._vertices)])
 
         return intersection
+
+def intersection(a: Shape, b: Shape):
+    if type(a) == type(b) == Circle:
+        return squared_distance(a.get_center(), b.get_center()) <= (a.get_radius()+b.get_radius())**2
