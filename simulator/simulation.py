@@ -51,7 +51,7 @@ class Simulation:
 
         couples, shapes = sweep_and_prune(self._entities)
         for c in couples:
-            if self._entities[c[0]].body&self._entities[c[1]].body != set():
+            if squared_distance(self._entities[c[0]].body.get_center(), self._entities[c[1]].body.get_center()) <= (self._entities[c[0]].body.get_radius()+self._entities[c[1]].body.get_radius())**2:
                 deplacement = static_resolution(self._entities[c[0]].body, self._entities[c[1]].body)
                 self._entities[c[0]].body.set_center(self._entities[c[0]].body.get_center()+deplacement[0])
                 self._entities[c[1]].body.set_center(self._entities[c[1]].body.get_center()+deplacement[1])
