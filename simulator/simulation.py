@@ -59,7 +59,7 @@ class Simulation:
 
         couples, shapes = sweep_and_prune(self._entities)
         for c in couples:
-            if intersection(self._entities[c[0]].body, self._entities[c[0]].body):
+            if intersection(self._entities[c[0]].body, self._entities[c[1]].body):
                 deplacement = static_resolution(self._entities[c[0]].body, self._entities[c[1]].body)
                 self._entities[c[0]].body.set_center(self._entities[c[0]].body.get_center()+deplacement[0])
                 self._entities[c[1]].body.set_center(self._entities[c[1]].body.get_center()+deplacement[1])
@@ -72,12 +72,12 @@ class Simulation:
         for key in self._entities:
             self._entities[key].update(1/self._update_per_second)
 
-        #for key in self._entities:
-        #    for other in self._entities:
-        #        if key != other:
-        #            gravity = self._entities[key].get_mass()*self._entities[other].get_mass()/squared_distance(self._entities[key].body.get_center(), self._entities[other].body.get_center())
-        #            dir = normalize(self._entities[key].body.get_center()-self._entities[other].body.get_center())
-        #            self._entities[key].apply_force(-gravity*dir)
+        for key in self._entities:
+            for other in self._entities:
+                if key != other:
+                    gravity = self._entities[key].get_mass()*self._entities[other].get_mass()/squared_distance(self._entities[key].body.get_center(), self._entities[other].body.get_center())
+                    dir = normalize(self._entities[key].body.get_center()-self._entities[other].body.get_center())
+                    self._entities[key].apply_force(-gravity*dir)
     
     def display_on(self, surface):
         surface.fill((0, 0, 0))
@@ -89,7 +89,8 @@ class Simulation:
                 draw.line(surface, (255, 0, 0), vect_to_tuple(e.body.get_center()), vect_to_tuple(e.body.get_center()+e.get_velocity()), 2)
 
                 for f in e.get_forces():
-                    draw.line(surface, (0, 0, 255), vect_to_tuple(e.body.get_center()), vect_to_tuple(e.body.get_center()+f), 2)
+                    pass
+                    #draw.line(surface, (0, 0, 255), vect_to_tuple(e.body.get_center()), vect_to_tuple(e.body.get_center()+f), 2)
 
     def __del__(self):
         Simulation.count -= 1
