@@ -3,10 +3,10 @@ from geometry.shape import *
 
 class Entity:
     def __init__(self, velocity: Vector, collision_box: Shape, mass: float):
-        self._velocity = velocity
+        self._velocity = velocity # m.s^-1
         self._collision_box = collision_box
-        self._mass = mass
-        self._forces = []
+        self._mass = mass # Kg
+        self._forces = [] # N
     
     def apply_force(self, vect):
         self._forces.append(vect)
