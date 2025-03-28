@@ -7,7 +7,7 @@ from physics.collisions import *
 
 from pygame import draw
 
-max_force = 0
+from simulator.trajectory import *
 
 class Simulation:
     count = 0
@@ -33,6 +33,9 @@ class Simulation:
         self._editing = False
         self._editing_id = None
 
+        self._trajectories = dict()
+        self._trajectories[1] = Trajectory(100)
+
         self._follow = 0
     
     def move_camera(self, x, y):
@@ -53,10 +56,12 @@ class Simulation:
         if not(self._state):
             return
         
-        #v = self._entities[self._follow].body.get_center()
-        #self._camera.position = Vector(v[0], -v[1])
-        #print(self._camera.position)
+        self._camera.position = Vector(-self._entities[self._follow].body.get_center()[0]+600, 350+self._entities[self._follow].body.get_center()[1])
 
+        for key in self._trajectories:
+            if key in self._entities and self._trajectories[key].update_clock():
+                self._trajectories[key].append(self._entities[key].body.get_center())
+            
         couples, shapes = sweep_and_prune(self._entities)
         for c in couples:
             if intersection(self._entities[c[0]].body, self._entities[c[1]].body):
@@ -73,6 +78,7 @@ class Simulation:
             self._entities[key].update(1/self._update_per_second)
 
         for key in self._entities:
+            self._entities[key].apply_force(-0.01*self._entities[key].get_velocity())
             for other in self._entities:
                 if key != other:
                     gravity = self._entities[key].get_mass()*self._entities[other].get_mass()/squared_distance(self._entities[key].body.get_center(), self._entities[other].body.get_center())
@@ -89,8 +95,11 @@ class Simulation:
                 draw.line(surface, (255, 0, 0), vect_to_tuple(e.body.get_center()), vect_to_tuple(e.body.get_center()+e.get_velocity()), 2)
 
                 for f in e.get_forces():
-                    pass
-                    #draw.line(surface, (0, 0, 255), vect_to_tuple(e.body.get_center()), vect_to_tuple(e.body.get_center()+f), 2)
+                    draw.line(surface, (0, 0, 255), vect_to_tuple(e.body.get_center()), vect_to_tuple(e.body.get_center()+f), 2)
+
+        for key in self._trajectories:
+            if key in self._entities:
+                self._trajectories[key].draw(surface, self._camera)
 
     def __del__(self):
         Simulation.count -= 1
