@@ -1,9 +1,10 @@
-from termcolor import colored
+# from termcolor import colored
 
 import pygame.time
 
 def log(message):
-    print(colored("GUI :", "cyan"), message+".")
+    pass
+    #print(colored("GUI :", "cyan"), message+".")
 
 # settings
 gui_clock = pygame.Clock()
