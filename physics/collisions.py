@@ -45,6 +45,15 @@ def sweep_and_prune(entities_dict): # one dimensional with insertion sort
     liste_triee = [i[1] for i in frames_bank]
     return coll_to_check, liste_triee
 
+def basic_polygon_resolution(ent1, ent2, coll_point, coll_seg): #cas de base
+    v1 = ent1.get_velocity()
+    mass2 = ent2.get_mass()
+    normal=coll_seg.get_normal()
+    normalized_normal=normalize(normal)
+    second_stat_velo=(normalized_normal*dot_product(v1,normalized_normal)-v1)
+    first_dyna_velo=(-second_stat_velo*mass2)
+    return second_stat_velo,first_dyna_velo
+
 def static_resolution(obj1, obj2):
     if type(obj1) == type(obj2) == Circle:
         c1,c2,r1,r2= obj1.get_center(), obj2.get_center(), obj1.get_radius(), obj2.get_radius()
