@@ -1,5 +1,5 @@
 import pygame
-import pygame_gui.ui_manager
+import pygame_gui
 pygame.init()
 
 width, height = 1000, 600
@@ -14,7 +14,6 @@ keyboard = Keyboard()
 
 clock = pygame.time.Clock()
 
-import pygame_gui
 manager = pygame_gui.ui_manager.UIManager(window_resolution=(width, height), theme_path="datas/themes/default.json",)
 panel = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(0, 10, 300, 34), manager=manager)
 pygame_gui.elements.UIButton(relative_rect=pygame.Rect(300-33, 0, 28, 28),
@@ -27,11 +26,11 @@ pygame_gui.elements.UIButton(relative_rect=pygame.Rect(300-59, 0, 28, 28),
                             text='',
                             container=panel,
                             object_id=pygame_gui.core.ObjectID(class_id="@left_arrow", object_id="#tablist_left")),
-pygame_gui.elements.UIButton(relative_rect=pygame.Rect(-3, -3, 70, 33),
+pygame_gui.elements.UIButton(relative_rect=pygame.Rect(-3, -3, 70, 34),
                              manager=manager,
                              text='Tab test',
                              container=panel)
-pygame_gui.elements.UIButton(relative_rect=pygame.Rect(68, 0, ),
+pygame_gui.elements.UIButton(relative_rect=pygame.Rect(62, -3, 34, 34),
                              manager=manager,
                              text='',
                              container=panel,
