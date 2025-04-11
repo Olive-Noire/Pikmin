@@ -80,8 +80,9 @@ class Polygon(Shape):
             self._vertices[i] += translation
     
     def rotate(self, angle):
+        center = barycenter(self._vertices)
         for i in range(len(self._vertices)):
-            self._vertices[i] = rotate(self._vertices[i], angle, barycenter(self._vertices))
+            self._vertices[i] = rotate(self._vertices[i], angle, center)
     
     def __add__(self, v: Vector):
         return Polygon([self._vertices[i]+v for i in range(len(self._vertices))])
