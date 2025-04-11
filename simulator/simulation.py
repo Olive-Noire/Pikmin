@@ -39,9 +39,29 @@ class Simulation:
         self._follow = 0
     
     def move_camera(self, x, y):
-        self._camera.position[0] += x
-        self._camera.position[1] += y
+        translation = Vector(-x, y)
+        self._camera.position += translation
+
+        for key in self._entities:
+            self._entities[key].body.translate(-1*translation)
+        
+        for key in self._trajectories:
+            self._trajectories[key].translate(-1*translation)
     
+    def zoom(self, relative: int):
+        self._camera.zoom += relative
+        if self._camera.zoom < 0:
+            self._camera.zoom = 0
+        
+        for key in self._entities:
+            self._entities[key].body.set_radius(self._entities[key].body.get_radius()*self._camera.zoom)
+
+            center = self._entities[key].body.get_center()
+            self._entities[key].body.set_center(Vector((center[0]-600)*self._camera.zoom+600, (center[1]-350)*self._camera.zoom+350))
+        
+        for key in self._trajectories:            
+            self._trajectories[key].zoom(self._camera.zoom)
+
     def get_camera(self):
         return self._camera
 
@@ -56,7 +76,9 @@ class Simulation:
         if not(self._state):
             return
         
-        self._camera.position = Vector(-self._entities[self._follow].body.get_center()[0]+600, 350+self._entities[self._follow].body.get_center()[1])
+        if len(self._entities) > self._follow:
+            pass
+            #self._camera.position = Vector(-self._entities[self._follow].body.get_center()[0]+600, 350+self._entities[self._follow].body.get_center()[1])
 
         for key in self._trajectories:
             if key in self._entities and self._trajectories[key].update_clock():
@@ -65,7 +87,7 @@ class Simulation:
         couples, shapes = sweep_and_prune(self._entities)
         for c in couples:
             if intersection(self._entities[c[0]].body, self._entities[c[1]].body):
-                deplacement = static_resolution(self._entities[c[0]].body, self._entities[c[1]].body)
+                deplacement = static_resolution(self._entities[c[0]].body, self._entities[c[0]].get_mass(), self._entities[c[1]].body, self._entities[c[1]].get_mass())
                 self._entities[c[0]].body.set_center(self._entities[c[0]].body.get_center()+deplacement[0])
                 self._entities[c[1]].body.set_center(self._entities[c[1]].body.get_center()+deplacement[1])
 
@@ -78,17 +100,17 @@ class Simulation:
             self._entities[key].update(1/self._update_per_second)
 
         for key in self._entities:
-            self._entities[key].apply_force(-0.01*self._entities[key].get_velocity())
+            self._entities[key].apply_force(-0.001*self._entities[key].body.get_radius()*self._entities[key].get_velocity())
             for other in self._entities:
                 if key != other:
-                    gravity = self._entities[key].get_mass()*self._entities[other].get_mass()/squared_distance(self._entities[key].body.get_center(), self._entities[other].body.get_center())
+                    gravity = 6.6743e-11*self._entities[key].get_mass()*self._entities[other].get_mass()/squared_distance(self._entities[key].body.get_center(), self._entities[other].body.get_center())
                     dir = normalize(self._entities[key].body.get_center()-self._entities[other].body.get_center())
                     self._entities[key].apply_force(-gravity*dir)
     
     def display_on(self, surface):
         surface.fill((0, 0, 0))
 
-        vect_to_tuple = lambda v: (v[0]+self._camera.position[0], self._camera.position[1]-v[1])
+        vect_to_tuple = lambda v: (v[0], -v[1])
         for e in self._entities.values():
             if type(e.body) == Circle:
                 draw.circle(surface, (255, 255, 255), vect_to_tuple(e.body.get_center()), e.body.get_radius(), 0)
