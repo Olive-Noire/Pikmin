@@ -23,8 +23,8 @@ clock = pygame.time.Clock()
 
 simulations = [Simulation(24, 24, True)]
 tablist.add("CACA")
-#simulations[0].add_entity(Entity(Vector(0, 0), Circle(Vector(0, -6356752-150), 6356752), 5.972e24))
-#simulations[0].add_entity(Entity(Vector(0, 0), Circle(Vector(100, -200), 100), 1000))
+simulations[0].add_entity(Entity(Vector(0, 0), Polygon([Vector(100, 150), Vector(150, 150), Vector(150, 100), Vector(100, 100)]), 0.1))
+simulations[0].add_entity(Entity(Vector(0, 0), Polygon([Vector(0, 100), Vector(50, 50), Vector(0, 0)]), 0.1))
 #simulations[0].add_entity(Entity(Vector(-10, 0), Circle(Vector(600, -200), 30), 0.1))
 #simulations[0].add_entity(Entity(Vector(0, 0), Circle(Vector(350, -200), 30), 0.1))
 key = -1
