@@ -78,7 +78,6 @@ class Simulation:
         
         if len(self._entities) > self._follow:
             pass
-            #self._camera.position = Vector(-self._entities[self._follow].body.get_center()[0]+600, 350+self._entities[self._follow].body.get_center()[1])
 
         for key in self._trajectories:
             if key in self._entities and self._trajectories[key].update_clock():
@@ -87,20 +86,28 @@ class Simulation:
         couples, shapes = sweep_and_prune(self._entities)
         for c in couples:
             if intersection(self._entities[c[0]].body, self._entities[c[1]].body):
-                deplacement = static_resolution(self._entities[c[0]].body, self._entities[c[0]].get_mass(), self._entities[c[1]].body, self._entities[c[1]].get_mass())
-                self._entities[c[0]].body.set_center(self._entities[c[0]].body.get_center()+deplacement[0])
-                self._entities[c[1]].body.set_center(self._entities[c[1]].body.get_center()+deplacement[1])
+                if type(self._entities[c[0]]) == type(self._entities[c[1]]) == Circle:
+                    deplacement = static_resolution(self._entities[c[0]].body, self._entities[c[0]].get_mass(), self._entities[c[1]].body, self._entities[c[1]].get_mass())
+                    self._entities[c[0]].body.set_center(self._entities[c[0]].body.get_center()+deplacement[0])
+                    self._entities[c[1]].body.set_center(self._entities[c[1]].body.get_center()+deplacement[1])
 
                 speeds = dynamic_resolution(self._entities[c[0]], self._entities[c[1]])
 
-                self._entities[c[0]].set_velocity(speeds[0])
-                self._entities[c[1]].set_velocity(speeds[1])
+                if type(self._entities[c[0]]) == type(self._entities[c[1]]) == Circle:
+                    self._entities[c[0]].set_velocity(speeds[0])
+                    self._entities[c[1]].set_velocity(speeds[1])
+                else:
+                    self._entities[c[0]].set_velocity(speeds[0][0])
+                    self._entities[c[1]].set_velocity(speeds[1][0])
+
+                    self._entities[c[0]].add_angular_velocity(speeds[0][1])
+                    self._entities[c[1]].add_angular_velocity(speeds[1][1])
 
         for key in self._entities:
             self._entities[key].update(1/self._update_per_second)
 
         for key in self._entities:
-            self._entities[key].apply_force(-0.001*self._entities[key].body.get_radius()*self._entities[key].get_velocity())
+            #self._entities[key].apply_force(-0.001*self._entities[key].body.get_radius()*self._entities[key].get_velocity())
             for other in self._entities:
                 if key != other:
                     gravity = 6.6743e-11*self._entities[key].get_mass()*self._entities[other].get_mass()/squared_distance(self._entities[key].body.get_center(), self._entities[other].body.get_center())
@@ -115,9 +122,11 @@ class Simulation:
             if type(e.body) == Circle:
                 draw.circle(surface, (255, 255, 255), vect_to_tuple(e.body.get_center()), e.body.get_radius(), 0)
                 draw.line(surface, (255, 0, 0), vect_to_tuple(e.body.get_center()), vect_to_tuple(e.body.get_center()+e.get_velocity()), 2)
+            elif type(e.body) == Polygon:
+                draw.polygon(surface, (255, 0, 0), [vect_to_tuple(p) for p in e.body.get_vertices()])
 
-                for f in e.get_forces():
-                    draw.line(surface, (0, 0, 255), vect_to_tuple(e.body.get_center()), vect_to_tuple(e.body.get_center()+f), 2)
+            for f in e.get_forces():
+                draw.line(surface, (0, 0, 255), vect_to_tuple(e.body.get_center()), vect_to_tuple(e.body.get_center()+f), 2)
 
         for key in self._trajectories:
             if key in self._entities:
