@@ -28,6 +28,9 @@ class Circle(Shape):
     def set_radius(self, radius: float):
         assert(radius > 0)
         self._radius = radius
+    
+    def translate(self, vector: Vector):
+        self._center += vector
 
     def __contains__(self, point: Vector):
         return squared_distance(self._center, point) <= self._radius**2
@@ -63,11 +66,22 @@ class Polygon(Shape):
         assert(len(vertices) >= 3 and not(has_duplicates(vertices)))
         self._vertices = vertices
     
+    def set_center(self, center):
+        self.translate(center-self.get_center())
+    
     def get_center(self):
         return barycenter(self._vertices)
     
     def get_vertices(self):
         return self._vertices
+
+    def translate(self, translation):
+        for i in range(len(self._vertices)):
+            self._vertices[i] += translation
+    
+    def rotate(self, angle):
+        for i in range(len(self._vertices)):
+            self._vertices[i] = rotate(self._vertices[i], angle, barycenter(self._vertices))
     
     def __add__(self, v: Vector):
         return Polygon([self._vertices[i]+v for i in range(len(self._vertices))])
@@ -95,10 +109,14 @@ class Polygon(Shape):
     def __and__(self, other):
         intersection = set()
         for i in range(len(self._vertices)):
-            intersection |= other&Segment(self._vertices[i], self._vertices[(i+1)%len(self._vertices)])
+            seg = Segment(self._vertices[i], self._vertices[(i+1)%len(self._vertices)])
+            if other&seg != set():
+                intersection.add((list(seg&other)[0], seg))
 
         return intersection
 
 def intersection(a: Shape, b: Shape):
     if type(a) == type(b) == Circle:
         return squared_distance(a.get_center(), b.get_center()) <= (a.get_radius()+b.get_radius())**2
+    if type(a) == type(b) == Polygon:
+        return a&b != set()
