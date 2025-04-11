@@ -42,7 +42,7 @@
 
     "window.#title_bar":
     {
-        "coulours":
+        "colours":
         {
             "normal_text":"#FF0000",
             "active_bg":"#FFFF00",
@@ -52,6 +52,149 @@
         "misc":
         {
             "text_horiz_alignment": "center"
+        }
+    },
+
+    "@search_bt":
+    {
+        "images":
+        {
+            "normal_image":
+            {
+                "path": "datas/textures/gui/search/normal.png"
+            },
+
+            "hovered_image":
+            {
+                "path": "datas/textures/gui/search/hover.png"
+            },
+
+            "selected_image":
+            {
+                "path": "datas/textures/gui/search/press.png"
+            }
+        }
+    },
+
+    "@add_bt":
+    {
+        "images":
+        {
+            "normal_image":
+            {
+                "path": "datas/textures/gui/add_button/normal.png"
+            },
+
+            "hovered_image":
+            {
+                "path": "datas/textures/gui/add_button/hover.png"
+            },
+
+            "selected_image":
+            {
+                "path": "datas/textures/gui/add_button/press.png"
+            }
+        }
+    },
+
+    "@close_bt":
+    {
+        "images":
+        {
+            "normal_image":
+            {
+                "path": "datas/textures/gui/close_button/normal.png"
+            },
+
+            "hovered_image":
+            {
+                "path": "datas/textures/gui/close_button/hover.png"
+            },
+
+            "selected_image":
+            {
+                "path": "datas/textures/gui/close_button/press.png"
+            }
+        }
+    },
+    "@right_arrow":
+    {
+        "images":
+        {
+            "normal_image":
+            {
+                "path": "datas/textures/gui/arrow/right_normal.png"
+            },
+
+            "hovered_image":
+            {
+                "path": "datas/textures/gui/arrow/right_hover.png"
+            },
+
+            "selected_image":
+            {
+                "path": "datas/textures/gui/arrow/right_press.png"
+            }
+        }
+    },
+    "@left_arrow":
+    {
+        "images":
+        {
+            "normal_image":
+            {
+                "path": "datas/textures/gui/arrow/left_normal.png"
+            },
+
+            "hovered_image":
+            {
+                "path": "datas/textures/gui/arrow/left_hover.png"
+            },
+
+            "selected_image":
+            {
+                "path": "datas/textures/gui/arrow/left_press.png"
+            }
+        }
+    },
+    "@up_arrow":
+    {
+        "images":
+        {
+            "normal_image":
+            {
+                "path": "datas/textures/gui/arrow/up_normal.png"
+            },
+
+            "hovered_image":
+            {
+                "path": "datas/textures/gui/arrow/up_hover.png"
+            },
+
+            "selected_image":
+            {
+                "path": "datas/textures/gui/arrow/up_press.png"
+            }
+        }
+    },
+    "@down_arrow":
+    {
+        "images":
+        {
+            "normal_image":
+            {
+                "path": "datas/textures/gui/arrow/down_normal.png"
+            },
+
+            "hovered_image":
+            {
+                "path": "datas/textures/gui/arrow/down_hover.png"
+            },
+
+            "selected_image":
+            {
+                "path": "datas/textures/gui/arrow/down_press.png"
+            }
         }
     }
 }
