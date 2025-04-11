@@ -44,3 +44,8 @@ def solve_quadratic_equation(a, b, c):
     else:
         discriminant = sqrt(discriminant)
         return {(-b-discriminant)/(2*a), (-b+discriminant)/(2*a)}
+
+def sin_angle(a: Vector, b: Vector):
+    norm_prod=norm(a)*norm(b)
+    sinangle=determinant(a,b)/norm_prod
+    return sinangle
