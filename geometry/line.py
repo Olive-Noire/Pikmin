@@ -76,6 +76,10 @@ class Segment:
     def get_middle(self):
         return barycenter(self._endpoints)
     
+    def get_normal(self):
+        coefficients = get_line_coefficients(*self._endpoints)
+        return Vector(-coefficients[1], coefficients[0])
+    
     def __contains__(self, point: Vector):
         assert(type(point) == Vector)
 
