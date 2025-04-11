@@ -7,7 +7,7 @@ def log(message):
     #print(colored("GUI :", "cyan"), message+".")
 
 # settings
-gui_clock = pygame.Clock()
+gui_clock = pygame.time.Clock()
 tick = gui_clock.tick(60)/1000.0
 
 # fonts
