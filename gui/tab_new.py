@@ -1,12 +1,10 @@
 import pygame
 import pygame_gui
-import pygame_gui.ui_manager
 
 class Tablist:
-    def __init__(self, width: int, position: tuple, manager: pygame_gui.ui_manager, tabs: list = []):
+    def __init__(self, width: int, container, manager: pygame_gui.ui_manager, tabs: list = []):
         self._tabs = tabs
         self._width = width
-        self._position = position
         self._manager = manager
 
         self._current = -1
@@ -19,18 +17,14 @@ class Tablist:
         
         self._update_surface_flag = False
 
-        self._panel = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(0, 10, self._width, 34), manager=manager)
-        self._arrows = [
-            pygame_gui.elements.UIButton(relative_rect=pygame.Rect(self._width-33, 0, 28, 28),
-                                         manager=self._manager,
-                                         text='',
-                                         object_id=pygame_gui.core.ObjectID(class_id="@right_arrow", object_id="#tablist_right")),
-            pygame_gui.elements.UIButton(relative_rect=pygame.Rect(self._width-59, 0, 28, 28),
-                                         manager=self._manager,
-                                         text='',
-                                         object_id=pygame_gui.core.ObjectID(class_id="@left_arrow", object_id="#tablist_left")),
-        ]
+        self._panel = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(-3, 27, self._width, 34), manager=manager, container=container)
     
+    def get_manager(self):
+        return self._manager
+
+    def get_panel(self):
+        return self._panel
+
     def get_current(self):
         return self._current
 
@@ -148,8 +142,13 @@ class Tablist:
 class Tab:
     minimal_size = 70
     def __init__(self, title: str, type: str, tablist: Tablist):
-        self._title = pygame_gui.elements.UILabel()
         self._width = 0
         
         self._type = type
+        self._state = False
         
+        self._manager = Tablist.get_manager()
+        self._title = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(-3, -3, 70, 34),
+                                                   manager=self._manager,
+                                                   text='Tab test',
+                                                   container=panel)
