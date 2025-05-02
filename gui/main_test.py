@@ -15,22 +15,45 @@ keyboard = Keyboard()
 clock = pygame.time.Clock()
 
 manager = pygame_gui.ui_manager.UIManager(window_resolution=(width, height), theme_path="datas/themes/default.json",)
-panel = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(0, 10, 300, 34), manager=manager)
-pygame_gui.elements.UIButton(relative_rect=pygame.Rect(300-33, 0, 28, 28),
+tkt = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(-3, -3, width+6, 67), manager=manager)
+panel = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(-3, 27, width-60, 34), manager=manager, container=tkt)
+pygame_gui.elements.UIButton(relative_rect=pygame.Rect(-3, -3, 70, 30),
+                             manager=manager,
+                             text='Fichier',
+                             container=tkt)
+pygame_gui.elements.UIButton(relative_rect=pygame.Rect(62, -3, 90, 30),
+                             manager=manager,
+                             text='Paramètres',
+                             container=tkt)
+pygame_gui.elements.UIButton(relative_rect=pygame.Rect(160, -1, 28, 28),
+                             manager=manager,
+                             text='',
+                             container=tkt,
+                             object_id=pygame_gui.core.ObjectID(class_id="@up_arrow", object_id="#tablist_toggle"))
+pygame_gui.elements.UIButton(relative_rect=pygame.Rect(width-33, 30, 28, 28),
                             manager=manager,
                             text='',
-                            container=panel,
+                            container=tkt,
                             object_id=pygame_gui.core.ObjectID(class_id="@right_arrow", object_id="#tablist_right")),
-pygame_gui.elements.UIButton(relative_rect=pygame.Rect(300-59, 0, 28, 28),
+pygame_gui.elements.UIButton(relative_rect=pygame.Rect(width-59, 30, 28, 28),
                             manager=manager,
                             text='',
-                            container=panel,
+                            container=tkt,
                             object_id=pygame_gui.core.ObjectID(class_id="@left_arrow", object_id="#tablist_left")),
 pygame_gui.elements.UIButton(relative_rect=pygame.Rect(-3, -3, 70, 34),
                              manager=manager,
                              text='Tab test',
                              container=panel)
 pygame_gui.elements.UIButton(relative_rect=pygame.Rect(62, -3, 34, 34),
+                             manager=manager,
+                             text='',
+                             container=panel,
+                             object_id=pygame_gui.core.ObjectID(class_id="@close_bt", object_id="#tablist_close"))
+pygame_gui.elements.UIButton(relative_rect=pygame.Rect(95, -3, 70, 34),
+                             manager=manager,
+                             text='Tab test',
+                             container=panel)
+pygame_gui.elements.UIButton(relative_rect=pygame.Rect(159, -3, 34, 34),
                              manager=manager,
                              text='',
                              container=panel,
