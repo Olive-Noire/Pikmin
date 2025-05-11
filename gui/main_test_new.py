@@ -1,4 +1,6 @@
 import sys
+
+import pygame_gui.elements.ui_label
 sys.path.append("D:/Travail/Tle/NSI/Pikmin-main")
 
 import pygame
@@ -17,8 +19,10 @@ keyboard = Keyboard()
 
 clock = pygame.time.Clock()
 
+import pygame_gui.ui_manager
 from tab_new import Tab, Tablist
-tab_manager = pygame_gui.ui_manager.UIManager
+tab_manager = pygame_gui.ui_manager.UIManager(window_resolution=(width, height),
+                                              theme_path="datas/themes/default.json")
 tablist = Tablist(width, tab_manager)
 
 run = True
@@ -37,8 +41,12 @@ while run:
     if keyboard.key_down('f11'):
         pygame.display.toggle_fullscreen()
     
+    if keyboard.key_down('k'):
+        tablist.add(None)
+        
+    tab_manager.update(time_delta)
     screen.blit(background, (0,0))
     if tablist.get_uflag():
         tablist.update_surface()
-    
+    tab_manager.draw_ui(screen)
     pygame.display.update()
