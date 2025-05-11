@@ -13,7 +13,7 @@ class Tablist:
         self._scroll = 0
         self._width = width
         
-        self._update_surface_flag = False
+        self._update_surface_flag = True
 
         self._gui = pygame_gui.elements.UIPanel(relative_rect=pygame.Rect(-3, -3, self._width+6, 67), 
                                                 manager=self._manager)
@@ -47,6 +47,9 @@ class Tablist:
                                                       container=self._gui,
                                                       object_id=pygame_gui.core.ObjectID(class_id="@left_arrow", object_id="#tablist_left"))
         
+        self._held_right = False
+        self._held_left = False
+        
     def get_manager(self):
         return self._manager
 
@@ -60,12 +63,14 @@ class Tablist:
     def get_uflag(self):
         return self._update_surface_flag
     
-    def add(self, title, type):
-        self._tabs.append(Tab(title=title, type=type, id=self._tab_nb, tablist=self))
+    def add(self, title, type="test"):
+        if title is None:
+            title = f"New tab {self._tab_nb}"
+        self._tabs.append(Tab(title=title, type=type, id=self._tab_nb, panel=self._panel, tablist=self))
         self._tab_nb += 1
         if self._current == -1:
             self._current = 0
-            self._tabs[self._current].set_state(True)
+            self._tabs[self._current].state = True
         self._update_surface_flag = True
 
     def close(self, id):
@@ -74,8 +79,8 @@ class Tablist:
         self._tab_nb -= 1
         for i in range(id, self._tab_nb):
             self._tabs[i].set_id(i)
-            self._tabs[i].get_tab.change_object_id(pygame_gui.core.ObjectID(object_id=f"#tab{i}"))
-            self._tabs[i].get_close.change_object_id(pygame_gui.core.ObjectID(class_id="@close_bt", object_id=f"#close{i}"))
+            self._tabs[i].tab_button.change_object_id(pygame_gui.core.ObjectID(object_id=f"#tab{i}"))
+            self._tabs[i].close_button.change_object_id(pygame_gui.core.ObjectID(class_id="@close_bt", object_id=f"#close{i}"))
     
     def update(self, event):
         self._manager.process_events(event)
@@ -90,11 +95,9 @@ class Tablist:
                 print('toggle')
                 self._update_surface_flag = True
             elif event.ui_object_id == "panel.#tablist_right":
-                print('right')
-                self._update_surface_flag = True
+                self._held_right = True
             elif event.ui_object_id == "panel.#tablist_left":
-                print('left')
-                self._update_surface_flag = True
+                self._held_left = True
             else:
                 for i in range(self._tab_nb):
                     if event.ui_object_id == f"panel.#tab{i}":
@@ -103,15 +106,20 @@ class Tablist:
                     elif event.ui_object_id == f"panel.#close{i}":
                         print(f'close{i}')
                         self._update_surface_flag = True
-            
-            
+        
         elif event.type == pygame_gui.UI_BUTTON_PRESSED:
             if event.ui_object_id == "panel.#tablist_right":
-                print('hright')
-                self._update_surface_flag = True
+                self._held_right = False
             elif event.ui_object_id == "panel.#tablist_left":
-                print('hleft')
-                self._update_surface_flag = True
+                self._held_left = False
+        
+        if self._held_right:
+            print('right')
+            self._update_surface_flag = True
+        if self._held_left:
+            print('left')
+            self._update_surface_flag = True
+
         
     def update_surface(self):
         self._update_surface_flag = False
@@ -120,8 +128,8 @@ class Tablist:
         self._tab_right.set_relative_position((self._width-33, 30))
         self._tab_left.set_relative_position((self._width-59, 30))
         for i in range(self._tab_nb):
-            self._tabs[i].get_tab().set_relative_position((98*i-3 + self._scroll, -3))
-            self._tabs[i].get_close().set_relative_position((98*i+61 + self._scroll, -3))
+            self._tabs[i].tab_button.set_relative_position((98*i-3 + self._scroll, -3))
+            self._tabs[i].close_button.set_relative_position((98*i+61 + self._scroll, -3))
 
     """def update_scroll(self):
         if self._scroll <= -(len(self._tabs)-1)*self._tab_width:
@@ -133,37 +141,25 @@ class Tablist:
 class Tab:
     minimal_size = 70
     def __init__(self, title: str, type: str, id: int, panel, tablist: Tablist):
-        self._id = id
-        self._state = False
+        self.id = id
+        self.state = False
         
-        self._type = type
-        self._title = title
+        self.type = type
+        self.title = title
         
-        self._manager = Tablist.get_manager()
-        self._panel = panel
-        self._tab_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(-3, -3, 70, 34),
-                                                        manager=self._manager,
+        self.manager = tablist.get_manager()
+        self.panel = panel
+        self.tab_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(-3, -3, 70, 34),
+                                                        manager=self.manager,
                                                         text=title,
-                                                        container=self._panel,
-                                                        object_id=pygame_gui.core.ObjectID(object_id=f"#tab{self._id}"))
-        self._close_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(62, -3, 34, 34),
-                                                          manager=self._manager,
+                                                        container=self.panel,
+                                                        object_id=pygame_gui.core.ObjectID(object_id=f"#tab{self.id}"))
+        self.close_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(62, -3, 34, 34),
+                                                          manager=self.manager,
                                                           text='',
-                                                          container=self._panel,
-                                                          object_id=pygame_gui.core.ObjectID(class_id="@close_bt", object_id=f"#close{self._id}"))
+                                                          container=self.panel,
+                                                          object_id=pygame_gui.core.ObjectID(class_id="@close_bt", object_id=f"#close{self.id}"))
         
     def close(self):
         # Peut-être ouvrir fenêtre pour demander de sauvegarder ?
         pass
-    
-    def set_id(self, id):
-        self._id = id
-    
-    def set_state(self, state):
-        self._state = state
-    
-    def get_tab(self):
-        return self._tab_button
-    
-    def get_close(self):
-        return self._close_button
