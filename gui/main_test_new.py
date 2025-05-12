@@ -1,7 +1,5 @@
 import sys
-
-import pygame_gui.elements.ui_label
-sys.path.append("D:/Travail/Tle/NSI/Pikmin-main")
+sys.path.append("D:/Documents/Tle/NSI/Python/Projet/previous_versions/pikmin/Pikmin-main")
 
 import pygame
 import pygame_gui
@@ -34,19 +32,20 @@ while run:
             run = False
         if event.type == pygame.WINDOWRESIZED:
             tablist.set_width(screen.get_width())
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_F11:
+                pygame.display.toggle_fullscreen()
+            if event.key == pygame.K_k:
+                tablist.add(None)
         
         mouse.update(event)
         keyboard.update(event)
-        
-    if keyboard.key_down('f11'):
-        pygame.display.toggle_fullscreen()
-    
-    if keyboard.key_down('k'):
-        tablist.add(None)
-        
+
     tab_manager.update(time_delta)
     screen.blit(background, (0,0))
-    if tablist.get_uflag():
+    if tablist.get_usf():
         tablist.update_surface()
+    if tablist.get_usc():
+        tablist.update_scroll()
     tab_manager.draw_ui(screen)
     pygame.display.update()
